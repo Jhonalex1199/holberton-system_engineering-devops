@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
-# Configure Nginx so that its HTTP response contains a custom header
-
-sudo apt-get -y update
-sudo apt-get -y install nginx
-sudo sed -i "33i \\\\t\tadd_header X-Served-By \$hostname;" /etc/nginx/sites-enabled/default
-sudo service nginx restart
+#  Bash script that configures a new Ubuntu machine to HAproxy
+apt-get update
+apt-get -y install software-properties-common
+add-apt-repository -y ppa:vbernat/haproxy-2.0
+apt-get update
+apt-get -y install haproxy=2.0.\*
+echo "frontend load-banlancer
+    bind *:80
+    mode http
+    default_backend web-backend" >> /etc/haproxy/haproxy.cfg
+echo "backend web-backend
+    balance roundrobin
+    server 2050-web-01 34.229.218.206:80 check
+    server 2050-web-02 54.210.76.219:80 check" >> /etc/haproxy/haproxy.cfg
+service haproxy restart
